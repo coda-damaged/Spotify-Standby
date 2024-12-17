@@ -42,7 +42,6 @@ if (accessToken) {
     fetchUserProfile(accessToken); // Fetch user profile
     fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
     startPollingForCurrentTrack(accessToken); // Start polling to update current track
-    hideLoginButton(); // Hide login button if already logged in
 } else {
     console.log('Access Token is missing!');
     // Show message or prompt to log in
@@ -59,6 +58,9 @@ async function fetchUserProfile(token) {
         console.log('User Data:', data); // Log user data
         // Update the UI with user profile data
         document.getElementById('user-name').textContent = `Welcome, ${data.display_name}`;
+        
+        // Hide the login button if user is logged in
+        hideLoginButton();
     } else {
         console.error('Failed to fetch user profile.');
     }
@@ -82,7 +84,7 @@ async function fetchCurrentlyPlaying(token) {
             document.getElementById('title').textContent = 'No song is currently playing';
         }
     } else {
-        console.error('Failed to fetch currently playing track. Response status:', response.status);
+        console.error('Failed to fetch currently playing track.');
     }
 }
 
@@ -93,7 +95,7 @@ function startPollingForCurrentTrack(token) {
     }, 1000); // Poll every 5 seconds
 }
 
-// Hide the login button if the user is already logged in
+// Hide the login button if the user is logged in
 function hideLoginButton() {
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
@@ -110,6 +112,5 @@ if (!window.location.hash && !localStorage.getItem('spotifyAccessToken')) {
     if (accessToken) {
         fetchUserProfile(accessToken); // Fetch user profile
         fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
-        hideLoginButton(); // Hide login button if already logged in
     }
 }
