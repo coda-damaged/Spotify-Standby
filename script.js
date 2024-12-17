@@ -42,6 +42,7 @@ if (accessToken) {
     fetchUserProfile(accessToken); // Fetch user profile
     fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
     startPollingForCurrentTrack(accessToken); // Start polling to update current track
+    hideLoginButton(); // Hide login button if already logged in
 } else {
     console.log('Access Token is missing!');
     // Show message or prompt to log in
@@ -92,6 +93,14 @@ function startPollingForCurrentTrack(token) {
     }, 1000); // Poll every 5 seconds
 }
 
+// Hide the login button if the user is already logged in
+function hideLoginButton() {
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.style.display = 'none'; // Hide login button
+    }
+}
+
 // Ensure the redirect URL is consistent and correct in Spotify Developer Dashboard
 if (!window.location.hash && !localStorage.getItem('spotifyAccessToken')) {
     console.log('Please log in to Spotify.');
@@ -101,5 +110,6 @@ if (!window.location.hash && !localStorage.getItem('spotifyAccessToken')) {
     if (accessToken) {
         fetchUserProfile(accessToken); // Fetch user profile
         fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
+        hideLoginButton(); // Hide login button if already logged in
     }
 }
