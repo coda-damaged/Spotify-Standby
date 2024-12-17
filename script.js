@@ -89,7 +89,7 @@ async function fetchCurrentlyPlaying(token) {
 function startPollingForCurrentTrack(token) {
     setInterval(() => {
         fetchCurrentlyPlaying(token);
-    }, 5000); // Poll every 5 seconds
+    }, 1000); // Poll every 5 seconds
 }
 
 // Ensure the redirect URL is consistent and correct in Spotify Developer Dashboard
