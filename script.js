@@ -1,21 +1,17 @@
 // Spotify Web API integration
 const CLIENT_ID = '95611b1c29994911b89c1c209a517c29';
-const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback'; // Change for GitHub Pages
+const REDIRECT_URI = 'https://your-username.github.io/Spotify-Standby/callback'; // Update with your GitHub Pages URL
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
 // Get access token from localStorage
 const accessToken = localStorage.getItem('spotifyAccessToken');
 
-// Proceed with fetching data only if the access token exists
-if (accessToken) {
-    fetchUserProfile(accessToken); // Fetch user profile
-    fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
-} else {
-    console.log('Access Token is missing!');
-    // Optionally, show a message or redirect to login page
-}
-
+// Login button click handler
+document.getElementById('login-btn').addEventListener('click', () => {
+    // Redirect user to Spotify login
+    window.location.href = `${AUTH_ENDPOINT}?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+});
 
 // Dynamic clock
 function updateTime() {
@@ -30,9 +26,9 @@ updateTime();
 if (accessToken) {
     fetchUserProfile(accessToken); // Fetch user profile
     fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
-    setInterval(() => fetchCurrentlyPlaying(accessToken), 3000); // Update every 3 seconds
 } else {
     console.log('Access Token is missing!');
+    // Show a message or prompt to log in
 }
 
 async function fetchUserProfile(token) {
@@ -68,72 +64,5 @@ async function fetchCurrentlyPlaying(token) {
         }
     } else {
         console.error('Failed to fetch currently playing track.');
-    }
-}
-
-// Handle play/pause and navigation
-document.getElementById('play-btn').addEventListener('click', () => {
-    togglePlayPause(accessToken);
-});
-
-document.getElementById('prev-btn').addEventListener('click', () => {
-    changeTrack('previous', accessToken);
-});
-
-document.getElementById('next-btn').addEventListener('click', () => {
-    changeTrack('next', accessToken);
-});
-
-// Toggle play/pause
-async function togglePlayPause(token) {
-    const statusResponse = await fetch('https://api.spotify.com/v1/me/player', {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (statusResponse.ok) {
-        const data = await statusResponse.json();
-
-        // Check if the player is playing or paused
-        if (data.is_playing) {
-            // If playing, pause the song
-            const pauseResponse = await fetch('https://api.spotify.com/v1/me/player/pause', {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (pauseResponse.status === 204) {
-                console.log('Playback paused');
-            }
-        } else {
-            // If paused, play the song
-            const playResponse = await fetch('https://api.spotify.com/v1/me/player/play', {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (playResponse.status === 204) {
-                console.log('Playback started');
-            }
-        }
-    } else {
-        console.error('Failed to fetch player status.');
-    }
-}
-
-// Skip to next/previous track
-async function changeTrack(direction, token) {
-    const response = await fetch(`https://api.spotify.com/v1/me/player/${direction}`, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (response.ok) {
-        console.log(`Moved to ${direction} track`);
-    } else {
-        console.error('Failed to change track.');
     }
 }
