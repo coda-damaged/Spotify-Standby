@@ -1,0 +1,9 @@
+<script>
+    const accessToken = new URLSearchParams(window.location.search).get('access_token');
+    if (accessToken) {
+        localStorage.setItem('spotifyAccessToken', accessToken);
+        window.location.href = '/'; // Redirect to the home page
+    } else {
+        document.body.innerHTML = '<h1>Access token missing!</h1>';
+    }
+</script>
