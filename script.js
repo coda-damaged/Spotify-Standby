@@ -7,6 +7,16 @@ const RESPONSE_TYPE = 'token';
 // Get access token from localStorage
 const accessToken = localStorage.getItem('spotifyAccessToken');
 
+// Proceed with fetching data only if the access token exists
+if (accessToken) {
+    fetchUserProfile(accessToken); // Fetch user profile
+    fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
+} else {
+    console.log('Access Token is missing!');
+    // Optionally, show a message or redirect to login page
+}
+
+
 // Dynamic clock
 function updateTime() {
     const now = new Date();
