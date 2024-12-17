@@ -1,6 +1,6 @@
 // Spotify Web API integration
 const CLIENT_ID = '95611b1c29994911b89c1c209a517c29';
-const REDIRECT_URI = 'https://your-username.github.io/Spotify-Standby/callback'; // Update with your GitHub Pages URL
+const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback'; // Update with your GitHub Pages URL
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
