@@ -5,7 +5,7 @@ const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
 // Add the required scopes for the access
-const SCOPES = 'user-read-playback-state user-library-read';
+const SCOPES = 'user-read-playback-state user-library-read user-read-currently-playing';
 
 // Function to extract token from URL fragment or localStorage
 function getAccessToken() {
@@ -83,3 +83,69 @@ async function fetchCurrentlyPlaying(token) {
         console.error('Failed to fetch currently playing track.');
     }
 }
+
+// Play the track using Spotify API
+async function playMusic(token) {
+    const response = await fetch('https://api.spotify.com/v1/me/player/play', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            // You can pass the URI of the track or album you want to play, or leave empty to resume playback
+            context_uri: 'spotify:album:6v0o0tD0l6j5CZ7Vt8u6SY' // Example album URI
+        }),
+    });
+
+    if (response.ok) {
+        console.log('Playback started');
+    } else {
+        console.error('Failed to start playback');
+    }
+}
+
+// Skip to next track using Spotify API
+async function skipToNextTrack(token) {
+    const response = await fetch('https://api.spotify.com/v1/me/player/next', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (response.ok) {
+        console.log('Skipped to next track');
+    } else {
+        console.error('Failed to skip track');
+    }
+}
+
+// Skip to previous track using Spotify API
+async function skipToPreviousTrack(token) {
+    const response = await fetch('https://api.spotify.com/v1/me/player/previous', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (response.ok) {
+        console.log('Skipped to previous track');
+    } else {
+        console.error('Failed to go to previous track');
+    }
+}
+
+// Add event listeners for buttons
+document.getElementById('play-btn').addEventListener('click', () => {
+    playMusic(accessToken);
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+    skipToNextTrack(accessToken);
+});
+
+document.getElementById('prev-btn').addEventListener('click', () => {
+    skipToPreviousTrack(accessToken);
+});
