@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Success</title>
+</head>
+<body>
+    <h1>Logging you in...</h1>
+    <script>
+        // Extract access token from the URL
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+
+        if (accessToken) {
+            // Save access token to localStorage
+            localStorage.setItem('spotifyAccessToken', accessToken);
+
+            // Redirect to the main page
+            window.location.href = '/';
+        } else {
+            console.error('Access token not found!');
+        }
+    </script>
+</body>
+</html>
