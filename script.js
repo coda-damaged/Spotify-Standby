@@ -112,5 +112,6 @@ if (!window.location.hash && !localStorage.getItem('spotifyAccessToken')) {
     if (accessToken) {
         fetchUserProfile(accessToken); // Fetch user profile
         fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
+        hideLoginButton(); // Ensure login button is hidden after login
     }
 }
