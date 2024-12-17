@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Redirect</title>
-</head>
-<body>
-    <script>
-        // Extract the token from the URL hash
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const accessToken = params.get('access_token');
-
-        // If token exists, store it and redirect back to the main app
-        if (accessToken) {
-            localStorage.setItem('spotifyAccessToken', accessToken);
-            window.location.href = '/'; // Redirect to the main page after successful login
-        } else {
-            document.body.innerHTML = '<h1>Access token missing!</h1>';
-        }
-    </script>
-</body>
+<!-- callback.html -->
+<html>
+    <head>
+        <title>Spotify Login</title>
+    </head>
+    <body>
+        <h1>Redirecting...</h1>
+        <script>
+            // Extract access token from the URL and store it in localStorage
+            const urlParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = urlParams.get('access_token');
+            if (accessToken) {
+                localStorage.setItem('spotifyAccessToken', accessToken);
+                window.location.href = '/'; // Redirect back to the home page or another page
+            } else {
+                console.error('Access token not found');
+            }
+        </script>
+    </body>
 </html>
