@@ -1,11 +1,22 @@
 // Spotify Web API integration
 const CLIENT_ID = '95611b1c29994911b89c1c209a517c29';
-const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback';
+const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback'; // Update with your GitHub Pages URL
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
-// Get access token from localStorage
-const accessToken = localStorage.getItem('spotifyAccessToken');
+// Get access token from localStorage or URL
+function getAccessToken() {
+    const urlParams = new URLSearchParams(window.location.hash.substr(1)); // Get parameters from URL fragment
+    const token = urlParams.get('access_token');
+    
+    if (token) {
+        // Save the token to localStorage
+        localStorage.setItem('spotifyAccessToken', token);
+        window.location.hash = ''; // Clear the URL fragment after saving the token
+    }
+    
+    return localStorage.getItem('spotifyAccessToken');
+}
 
 // Login button click handler
 document.getElementById('login-btn').addEventListener('click', () => {
@@ -23,6 +34,8 @@ setInterval(updateTime, 1000);
 updateTime();
 
 // Fetch song data from Spotify
+const accessToken = getAccessToken(); // Get the access token (either from URL or localStorage)
+
 if (accessToken) {
     fetchUserProfile(accessToken); // Fetch user profile
     fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
