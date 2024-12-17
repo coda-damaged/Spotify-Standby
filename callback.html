@@ -1,9 +1,24 @@
-<script>
-    const accessToken = new URLSearchParams(window.location.search).get('access_token');
-    if (accessToken) {
-        localStorage.setItem('spotifyAccessToken', accessToken);
-        window.location.href = '/'; // Redirect to the home page
-    } else {
-        document.body.innerHTML = '<h1>Access token missing!</h1>';
-    }
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Redirect</title>
+</head>
+<body>
+    <script>
+        // Extract the token from the URL hash
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+
+        // Check if token exists, then store it in localStorage
+        if (accessToken) {
+            localStorage.setItem('spotifyAccessToken', accessToken);
+            window.location.href = '/'; // Redirect to the main app
+        } else {
+            document.body.innerHTML = '<h1>Access token missing!</h1>';
+        }
+    </script>
+</body>
+</html>
