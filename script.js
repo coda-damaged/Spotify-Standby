@@ -5,7 +5,7 @@ const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
 // Add the required scopes for the access
-const SCOPES = 'user-read-playback-state user-library-read user-read-currently-playing';
+const SCOPES = 'user-read-playback-state user-library-read user-read-currently-playing user-modify-playback-state';
 
 // Function to extract token from URL fragment or localStorage
 function getAccessToken() {
@@ -84,56 +84,93 @@ async function fetchCurrentlyPlaying(token) {
     }
 }
 
-// Play the track using Spotify API
-async function playMusic(token) {
-    const response = await fetch('https://api.spotify.com/v1/me/player/play', {
-        method: 'PUT',
+// Check if there is an active player
+async function checkActivePlayer(token) {
+    const response = await fetch('https://api.spotify.com/v1/me/player', {
         headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-            // You can pass the URI of the track or album you want to play, or leave empty to resume playback
-            context_uri: 'spotify:album:6v0o0tD0l6j5CZ7Vt8u6SY' // Example album URI
-        }),
     });
 
     if (response.ok) {
-        console.log('Playback started');
+        const data = await response.json();
+        if (data.device && data.device.is_active) {
+            return true; // Active player is available
+        } else {
+            console.log('No active player available');
+            return false;
+        }
     } else {
-        console.error('Failed to start playback');
+        console.error('Failed to check player status');
+        return false;
+    }
+}
+
+// Play the track using Spotify API
+async function playMusic(token) {
+    const isActive = await checkActivePlayer(token);
+    if (isActive) {
+        const response = await fetch('https://api.spotify.com/v1/me/player/play', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                // You can pass the URI of the track or album you want to play, or leave empty to resume playback
+                context_uri: 'spotify:album:6v0o0tD0l6j5CZ7Vt8u6SY' // Example album URI
+            }),
+        });
+
+        if (response.ok) {
+            console.log('Playback started');
+        } else {
+            console.error('Failed to start playback');
+        }
+    } else {
+        console.log('No active player available for play');
     }
 }
 
 // Skip to next track using Spotify API
 async function skipToNextTrack(token) {
-    const response = await fetch('https://api.spotify.com/v1/me/player/next', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+    const isActive = await checkActivePlayer(token);
+    if (isActive) {
+        const response = await fetch('https://api.spotify.com/v1/me/player/next', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
 
-    if (response.ok) {
-        console.log('Skipped to next track');
+        if (response.ok) {
+            console.log('Skipped to next track');
+        } else {
+            console.error('Failed to skip track');
+        }
     } else {
-        console.error('Failed to skip track');
+        console.log('No active player available to skip track');
     }
 }
 
 // Skip to previous track using Spotify API
 async function skipToPreviousTrack(token) {
-    const response = await fetch('https://api.spotify.com/v1/me/player/previous', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+    const isActive = await checkActivePlayer(token);
+    if (isActive) {
+        const response = await fetch('https://api.spotify.com/v1/me/player/previous', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
 
-    if (response.ok) {
-        console.log('Skipped to previous track');
+        if (response.ok) {
+            console.log('Skipped to previous track');
+        } else {
+            console.error('Failed to go to previous track');
+        }
     } else {
-        console.error('Failed to go to previous track');
+        console.log('No active player available to go to previous track');
     }
 }
 
