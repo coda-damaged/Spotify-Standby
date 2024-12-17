@@ -50,12 +50,14 @@ body {
 }
 
 #cover {
-    width: 100%;
-    max-width: 200px;
+    width: 70%; /* Adjust width to 70% of its parent container */
+    max-width: 200px; /* Still have a max-width for larger screens */
+    height: auto; /* Maintain aspect ratio */
     border-radius: 10px;
     margin: 20px 0;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
+
 
 #song-details {
     font-size: 1.2rem;
