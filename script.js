@@ -4,6 +4,9 @@ const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback'; 
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
+// Add the required scopes for the access
+const SCOPES = 'user-read-playback-state user-library-read';
+
 // Function to extract token from URL fragment or localStorage
 function getAccessToken() {
     const urlParams = new URLSearchParams(window.location.hash.substr(1)); // Get params from URL fragment
@@ -20,7 +23,7 @@ function getAccessToken() {
 
 // Handle login button click
 document.getElementById('login-btn').addEventListener('click', () => {
-    window.location.href = `${AUTH_ENDPOINT}?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    window.location.href = `${AUTH_ENDPOINT}?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}`;
 });
 
 // Dynamic clock
