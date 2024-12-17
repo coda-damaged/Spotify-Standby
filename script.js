@@ -1,26 +1,25 @@
 // Spotify Web API integration
 const CLIENT_ID = '95611b1c29994911b89c1c209a517c29';
-const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback'; // Update with your GitHub Pages URL
+const REDIRECT_URI = 'https://coda-damaged.github.io/Spotify-Standby/callback'; // Ensure this is in the Spotify Developer Dashboard
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
-// Get access token from localStorage or URL
+// Function to extract token from URL fragment or localStorage
 function getAccessToken() {
-    const urlParams = new URLSearchParams(window.location.hash.substr(1)); // Get parameters from URL fragment
+    const urlParams = new URLSearchParams(window.location.hash.substr(1)); // Get params from URL fragment
     const token = urlParams.get('access_token');
     
     if (token) {
-        // Save the token to localStorage
+        // Save token to localStorage if it's present in the URL
         localStorage.setItem('spotifyAccessToken', token);
         window.location.hash = ''; // Clear the URL fragment after saving the token
     }
     
-    return localStorage.getItem('spotifyAccessToken');
+    return localStorage.getItem('spotifyAccessToken'); // Return token from localStorage if available
 }
 
-// Login button click handler
+// Handle login button click
 document.getElementById('login-btn').addEventListener('click', () => {
-    // Redirect user to Spotify login
     window.location.href = `${AUTH_ENDPOINT}?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
 });
 
@@ -33,17 +32,18 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// Fetch song data from Spotify
-const accessToken = getAccessToken(); // Get the access token (either from URL or localStorage)
+// Fetch user profile and currently playing track
+const accessToken = getAccessToken(); // Get token (either from URL or localStorage)
 
 if (accessToken) {
     fetchUserProfile(accessToken); // Fetch user profile
     fetchCurrentlyPlaying(accessToken); // Fetch currently playing track
 } else {
     console.log('Access Token is missing!');
-    // Show a message or prompt to log in
+    // Show message or prompt to log in
 }
 
+// Fetch user profile from Spotify API
 async function fetchUserProfile(token) {
     const response = await fetch('https://api.spotify.com/v1/me', {
         headers: { Authorization: `Bearer ${token}` },
@@ -51,7 +51,7 @@ async function fetchUserProfile(token) {
 
     if (response.ok) {
         const data = await response.json();
-        console.log('User Data:', data); // Log the user data
+        console.log('User Data:', data); // Log user data
         // Update the UI with user profile data
         document.getElementById('user-name').textContent = `Welcome, ${data.display_name}`;
     } else {
@@ -59,6 +59,7 @@ async function fetchUserProfile(token) {
     }
 }
 
+// Fetch currently playing track from Spotify API
 async function fetchCurrentlyPlaying(token) {
     const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
         headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +67,7 @@ async function fetchCurrentlyPlaying(token) {
 
     if (response.ok) {
         const data = await response.json();
-        console.log('Currently Playing Data:', data); // Log currently playing track data
+        console.log('Currently Playing Data:', data); // Log track data
         // Update the UI with currently playing song data
         if (data.item) {
             document.getElementById('cover').src = data.item.album.images[0].url;
