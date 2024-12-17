@@ -12,10 +12,10 @@
         const params = new URLSearchParams(hash);
         const accessToken = params.get('access_token');
 
-        // Check if token exists, then store it in localStorage
+        // If token exists, store it and redirect back to the main app
         if (accessToken) {
             localStorage.setItem('spotifyAccessToken', accessToken);
-            window.location.href = '/'; // Redirect to the main app
+            window.location.href = '/'; // Redirect to the main page after successful login
         } else {
             document.body.innerHTML = '<h1>Access token missing!</h1>';
         }
